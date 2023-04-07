@@ -3,6 +3,8 @@ package cxcron
 import (
 	"sync"
 	"time"
+
+	"github.com/panjf2000/ants/v2"
 )
 
 // CronJob runs the given function at the specified interval until stopped.
@@ -23,7 +25,9 @@ func NewCronJob(interval time.Duration, f func()) *CronJob {
     }
 
     job.wg.Add(1)
-    go job.run()
+    ants.Submit(func() {
+         job.run()
+    })
 
     return job
 }
